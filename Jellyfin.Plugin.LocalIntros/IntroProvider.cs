@@ -173,6 +173,21 @@ public class IntroProvider : IIntroProvider
 
                 logger.LogInformation($"Selected intro path: {selectedItem.Path}");
 
+                // --- BEGIN KID TAG PATCH ---
+                
+                // Add the "kid" tag to the intro item so parental controls allow playback
+                if (!selectedItem.Tags.Contains("kid", StringComparer.OrdinalIgnoreCase))
+                {
+                    var newTags = selectedItem.Tags.ToList();
+                    newTags.Add("kid");
+                    selectedItem.Tags = newTags.ToArray();
+                
+                    // Save updated metadata to library
+                    LocalIntrosPlugin.LibraryManager.UpdateItem(selectedItem, null);
+                }
+                
+                // --- END KID TAG PATCH ---
+
                 return new []{new IntroInfo
                 {
                     Path = selectedItem.Path,
