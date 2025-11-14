@@ -175,24 +175,23 @@ public class IntroProvider : IIntroProvider
 
                 // --- BEGIN KID TAG PATCH ---
                 
-                // Add the "kid" tag to the intro item so parental controls allow playback
-                if (!selectedItem.Tags.Contains("kid", StringComparer.OrdinalIgnoreCase))
+                // Make sure the returned intro has the "kid" tag for parental control
+                var updatedItem = selectedItem; // copy reference
+                if (!updatedItem.Tags.Contains("kid", StringComparer.OrdinalIgnoreCase))
                 {
-                    var newTags = selectedItem.Tags.ToList();
+                    var newTags = updatedItem.Tags.ToList();
                     newTags.Add("kid");
-                    selectedItem.Tags = newTags.ToArray();
-                
-                    // Save updated metadata to library
-                    LocalIntrosPlugin.LibraryManager.UpdateItem(selectedItem, null);
+                    updatedItem.Tags = newTags.ToArray();
                 }
                 
-                // --- END KID TAG PATCH ---
-
-                return new []{new IntroInfo
+                // Return intro with "kid" tag applied
+                return new []{ new IntroInfo
                 {
-                    Path = selectedItem.Path,
-                    ItemId = selectedItem.Id
+                    Path = updatedItem.Path,
+                    ItemId = updatedItem.Id
                 }};
+                
+                // --- END KID TAG PATCH ---
             }
             else
             {
